@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileText } from "lucide-react";
 import { LabTest } from "@/components/composed/test-results/types";
-import { TestResultRow } from "@/components/composed/test-results/test-results/test-results-row";
+import { TestResultRow } from "@/components/composed/test-results/test-results-row";
 
 interface MedicalDashboardProps {
   labData: LabTest;

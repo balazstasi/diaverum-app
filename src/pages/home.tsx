@@ -1,5 +1,5 @@
 import BrowseFile from "@/components/composed/browse-file/browse-file";
-import { TestResults } from "@/components/composed/test-results/test-results/test-results";
+import { TestResults } from "@/components/composed/test-results/test-results";
 import { LabTest } from "@/components/composed/test-results/types";
 import { Button } from "@/components/ui/button";
 import { useFileBrowse } from "@/lib/use-file-browse";
