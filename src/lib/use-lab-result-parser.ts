@@ -88,7 +88,7 @@ function parseLabResults(input: string) {
               refRangeLow: result.refrangelow,
               refRangeHigh: result.refrangehigh,
               note: result.note,
-              nonSpecRefs: result.nonref,
+              nonSpecRefs: result.nonspecrefs,
               collectionDate: result.collectiondate,
               collectionTime: result.collectiontime,
               patientInfo: {

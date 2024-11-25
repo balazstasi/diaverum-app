@@ -3,8 +3,8 @@ export interface LabTest {
   testName: string;
   result: number | string;
   unit: string;
-  refRangeLow?: number;
-  refRangeHigh?: number;
+  refRangeLow?: string;
+  refRangeHigh?: string;
   collectionDate: string;
   collectionTime: string;
   note?: string;
