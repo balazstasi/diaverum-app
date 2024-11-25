@@ -1,6 +1,6 @@
 import { Data, Schema } from "effect";
 import { Effect, pipe } from "effect";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 const LabResultSchema = Schema.Struct({
   clinicNo: Schema.optional(Schema.String),
@@ -54,6 +54,7 @@ function parseLabResults(input: string) {
 
     const lines = input.split("\n").filter((line) => line && !line.startsWith("#"));
     const headers = lines[0].split("|").map((header) => header.toLowerCase().replace(/[^a-z0-9]/g, ""));
+    console.log("🚀 ~ parseLabResults ~ headers:", headers);
 
     if (headers.length !== lines[0].split("|").length) {
       return yield* _(Effect.fail(new InvalidHeaderError({ message: "Headers and data do not match" })));
@@ -77,10 +78,28 @@ function parseLabResults(input: string) {
             catch: (error) => new ValidationError({ message: String(error), line: index + 2 }),
           }),
           Effect.map((result) => {
-            console.log({ result: JSON.parse(JSON.stringify(result)) });
-            return JSON.parse(JSON.stringify(result));
+            return {
+              clinicNo: result.clinicno,
+              barcode: result.barcode,
+              testCode: result.testcode,
+              testName: result.testname,
+              result: result.result,
+              unit: result.unit,
+              refRangeLow: result.refrangelow,
+              refRangeHigh: result.refrangehigh,
+              note: result.note,
+              nonSpecRefs: result.nonref,
+              collectionDate: result.collectiondate,
+              collectionTime: result.collectiontime,
+              patientInfo: {
+                id: result.patientid,
+                name: result.patientname,
+                dob: result.dob,
+                gender: result.gender,
+              },
+            };
           }),
-          Effect.map((result) => Schema.validateSync(LabResultSchema)(result))
+          Effect.map((result) => result as unknown as LabTest)
         )
       )
     );
@@ -89,11 +108,8 @@ function parseLabResults(input: string) {
 
 export const useLabResultParser = () => {
   const [results, setResults] = useState<LabTest[]>([]);
+  console.log("🚀 ~ useLabResultParser ~ results:", results);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    console.log("asd", { results, error });
-  }, [results, error]);
 
   const processLabResults = useCallback(
     (fileContent: string) =>

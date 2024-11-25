@@ -21,8 +21,6 @@ export interface PatientResult {
   testName: string;
   value: number;
   date: string;
-  referenceRange: {
-    low?: number;
-    high?: number;
-  };
+  refRangeLow?: number;
+  refRangeHigh?: number;
 }

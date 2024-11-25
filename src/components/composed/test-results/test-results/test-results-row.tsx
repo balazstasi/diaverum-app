@@ -8,10 +8,10 @@ export const TestResultRow: React.FC<{ test: LabTest }> = ({ test }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const isAbnormal = () => {
-    if (typeof test.result === "number" && test.refRangeLow && test.refRangeHigh) {
-      return test.result < test.refRangeLow || test.result > test.refRangeHigh;
-    }
-    return false;
+    const refRangeLow = Number(test.refRangeLow);
+    const refRangeHigh = Number(test.refRangeHigh);
+    const result = Number(test.result);
+    return result < refRangeLow || result > refRangeHigh;
   };
 
   return (
@@ -50,6 +50,27 @@ export const TestResultRow: React.FC<{ test: LabTest }> = ({ test }) => {
           <div className="text-sm text-gray-600">
             Reference Range: {test.refRangeLow} - {test.refRangeHigh} {test.unit}
           </div>
+
+          <div className="mt-2 relative h-6 w-full min-w-full max-w-md bg-gray-100 rounded">
+            <div
+              className="absolute h-full bg-green-100 rounded"
+              style={{
+                left: `${(Number(test.refRangeLow) / (Number(test.refRangeHigh) * 1.5)) * 100}%`,
+                width: `${
+                  ((Number(test.refRangeHigh) - Number(test.refRangeLow)) /
+                    (Number(test.refRangeHigh) * 1.5)) *
+                  100
+                }%`,
+              }}
+            />
+            <div
+              className={`absolute w-2 h-full -ml-1 ${isAbnormal() ? "bg-red-500" : "bg-green-600"}`}
+              style={{
+                left: `${(Number(test.result) / (Number(test.refRangeHigh) * 1.5)) * 100}%`,
+              }}
+            />
+          </div>
+
           {test.nonSpecRefs && (
             <div className="text-sm text-gray-500 mt-2">Additional Information: {test.nonSpecRefs}</div>
           )}

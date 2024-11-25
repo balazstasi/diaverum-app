@@ -10,12 +10,12 @@ export const ValueTrendChart: React.FC<{ data: PatientResult[] }> = ({ data }) =
         <YAxis />
         <Tooltip />
         <Line type="monotone" dataKey="value" stroke="#2563eb" strokeWidth={2} />
-        {data[0].referenceRange.low && (
-          <Line type="monotone" dataKey="referenceRange.low" stroke="#dc2626" strokeDasharray="5 5" />
+        {/* {data[0].refRangeLow !== 0 && (
+          <Line type="monotone" dataKey="refRangeLow" stroke="#dc2626" strokeDasharray="5 5" />
         )}
-        {data[0].referenceRange.high && (
-          <Line type="monotone" dataKey="referenceRange.high" stroke="#dc2626" strokeDasharray="5 5" />
-        )}
+        {data[0].refRangeHigh !== 0 && (
+          <Line type="monotone" dataKey="refRangeHigh" stroke="#dc2626" strokeDasharray="5 5" />
+        )} */}
       </LineChart>
     </ResponsiveContainer>
   );
