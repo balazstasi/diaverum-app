@@ -1,6 +1,6 @@
-import { useFileBrowse } from "../utils/use-file-browse";
-import BrowseFile from "../components/browse-file/browse-file";
-import { useLabResultParser } from "../utils/use-lab-result-parser";
+import { useFileBrowse } from "../lib/use-file-browse";
+import BrowseFile from "../components/composed/browse-file/browse-file";
+import { useLabResultParser } from "../lib/use-lab-result-parser";
 import { useEffect } from "react";
 import { Effect } from "effect";
 
