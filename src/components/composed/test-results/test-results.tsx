@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileText } from "lucide-react";
+import { Copy, FileText } from "lucide-react";
 import { LabTest } from "@/components/composed/test-results/types";
 import { TestResultRow } from "@/components/composed/test-results/test-results-row";
 
@@ -18,6 +18,11 @@ const TestResults: React.FC<MedicalDashboardProps> = ({ labData }) => {
     // For now, we'll just console.log the data
     console.log("Exporting to PDF:", labData);
     alert("PDF export functionality would be implemented here");
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(JSON.stringify(labData, null, 2));
+    alert("Data copied to clipboard for " + labData.patientInfo?.name);
   };
 
   const groupedByCategory = (test: LabTest) => {
@@ -65,10 +70,16 @@ const TestResults: React.FC<MedicalDashboardProps> = ({ labData }) => {
             </div>
           )}
         </div>
-        <Button onClick={exportToPDF} className="flex items-center gap-2">
-          <FileText className="w-4 h-4" />
-          Export PDF
-        </Button>
+        <div className="flex gap-2 flex-col-reverse">
+          <Button onClick={copyToClipboard} variant="outline" className="flex items-center gap-2">
+            <Copy className="w-4 h-4" />
+            Copy Data
+          </Button>
+          <Button onClick={exportToPDF} className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            Export PDF
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
