@@ -74,13 +74,13 @@ const TestResults: React.FC<MedicalDashboardProps> = ({ labData }) => {
         <Tabs value={selectedTab} onValueChange={setSelectedTab}>
           <TabsList className="mb-4">
             <TabsTrigger value="results">Test Results</TabsTrigger>
-            {/* <TabsTrigger value="trends">Trends</TabsTrigger> */}
-            {/* <TabsTrigger value="distribution">Distribution</TabsTrigger> */}
           </TabsList>
 
           <TabsContent value="results">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold mb-4">{groupedByCategory(labData).category}</h3>
+              <h3 className="text-lg font-semibold mb-4">{`${groupedByCategory(labData).category} (${
+                labData.testCode
+              })`}</h3>
               <div className="space-y-2">
                 <TestResultRow test={groupedByCategory(labData).test} />
               </div>

@@ -1,6 +1,5 @@
 import { LabTest } from "@/components/composed/test-results/types";
-import { Tooltip } from "@/components/ui/tooltip";
-import { TooltipProvider, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { Info, ChevronUp, ChevronDown } from "lucide-react";
 import { useState } from "react";
 
@@ -47,6 +46,9 @@ export const TestResultRow: React.FC<{ test: LabTest }> = ({ test }) => {
     };
   }
 
+  const fullyPending =
+    test.result === "Pending" && !test.refRangeLow && !test.refRangeHigh && test.unit === "";
+
   return (
     <div className="border-b border-gray-200 py-4">
       <div
@@ -74,62 +76,76 @@ export const TestResultRow: React.FC<{ test: LabTest }> = ({ test }) => {
           <span className={`font-bold ${isAbnormal() ? "text-red-500" : "text-gray-900"}`}>
             {test.result} {test.unit}
           </span>
-          {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          {!fullyPending &&
+            (isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
         </div>
       </div>
 
-      {isExpanded && (test.refRangeLow || test.refRangeHigh) && (
+      {isExpanded && !fullyPending && (
         <div className="mt-4 pl-4">
           <div className="text-sm text-gray-600">
-            Reference Range {test.refRangeLow} - {test.refRangeHigh} {test.unit}
+            {test.refRangeLow && test.refRangeHigh && (
+              <>
+                Reference Range {test.refRangeLow} - {test.refRangeHigh} {test.unit}
+              </>
+            )}
+            {test.refRangeLow && !test.refRangeHigh && (
+              <p>
+                Reference Range: {test.refRangeLow} {test.unit}
+              </p>
+            )}
+            {test.refRangeHigh && !test.refRangeLow && (
+              <p>
+                Reference Range: {test.refRangeHigh} {test.unit}
+              </p>
+            )}
+            {test.nonSpecRefs && <p>Additional Information: {test.nonSpecRefs}</p>}
           </div>
 
-          <div className="mt-2 relative h-6 w-full min-w-full max-w-md bg-gray-100 rounded">
-            {(() => {
-              const {
-                minValue,
-                maxValue,
-                lowValue,
-                highValue,
-                resultValue,
-                isLowInequality,
-                isHighInequality,
-              } = getRangeDetails(test?.refRangeLow ?? "", test?.refRangeHigh ?? "", String(test.result));
+          {(test.refRangeLow || test.refRangeHigh) && (
+            <div className="mt-2 relative h-6 w-full min-w-full max-w-md bg-gray-100 rounded">
+              {(() => {
+                const {
+                  minValue,
+                  maxValue,
+                  lowValue,
+                  highValue,
+                  resultValue,
+                  isLowInequality,
+                  isHighInequality,
+                } = getRangeDetails(test?.refRangeLow ?? "", test?.refRangeHigh ?? "", String(test.result));
 
-              return (
-                <>
-                  <div
-                    className="absolute h-full bg-green-100 rounded"
-                    style={{
-                      left: `${((isLowInequality ? minValue : lowValue) / maxValue) * 100}%`,
-                      width: `${((highValue - lowValue) / maxValue) * 100}%`,
-                    }}
-                  />
-                  {isLowInequality && (
+                return (
+                  <>
                     <div
-                      className="absolute h-full w-2 bg-gray-300"
-                      style={{ left: `${(lowValue / maxValue) * 100}%` }}
+                      className="absolute h-full bg-green-100 rounded"
+                      style={{
+                        left: `${((isLowInequality ? minValue : lowValue) / maxValue) * 100}%`,
+                        width: `${((highValue - lowValue) / maxValue) * 100}%`,
+                      }}
                     />
-                  )}
-                  {isHighInequality && (
+                    {isLowInequality && (
+                      <div
+                        className="absolute h-full w-2 bg-gray-300"
+                        style={{ left: `${(lowValue / maxValue) * 100}%` }}
+                      />
+                    )}
+                    {isHighInequality && (
+                      <div
+                        className="absolute h-full w-2 bg-gray-300"
+                        style={{ left: `${(highValue / maxValue) * 100}%` }}
+                      />
+                    )}
                     <div
-                      className="absolute h-full w-2 bg-gray-300"
-                      style={{ left: `${(highValue / maxValue) * 100}%` }}
+                      className={`absolute w-2 h-full -ml-1 ${isAbnormal() ? "bg-red-500" : "bg-green-600"}`}
+                      style={{
+                        left: `${(resultValue / maxValue) * 100}%`,
+                      }}
                     />
-                  )}
-                  <div
-                    className={`absolute w-2 h-full -ml-1 ${isAbnormal() ? "bg-red-500" : "bg-green-600"}`}
-                    style={{
-                      left: `${(resultValue / maxValue) * 100}%`,
-                    }}
-                  />
-                </>
-              );
-            })()}
-          </div>
-
-          {test.nonSpecRefs && (
-            <div className="text-sm text-gray-500 mt-2">Additional Information: {test.nonSpecRefs}</div>
+                  </>
+                );
+              })()}
+            </div>
           )}
         </div>
       )}
