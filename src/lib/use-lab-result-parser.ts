@@ -1,23 +1,26 @@
-import { Data, Schema } from "effect";
+import { Data, Either, Schema } from "effect";
 import { Effect, pipe } from "effect";
 import { useCallback, useState } from "react";
 
 const LabResultSchema = Schema.Struct({
-  clinicNo: Schema.optional(Schema.String),
-  barcode: Schema.optional(Schema.String),
-  patientId: Schema.optional(Schema.String),
-  patientName: Schema.optional(Schema.String),
-  dateOfBirth: Schema.optional(Schema.String),
-  gender: Schema.optional(Schema.Union(Schema.Literal("M"), Schema.Literal("F"))),
-  collectionDate: Schema.optional(Schema.String),
-  collectionTime: Schema.optional(Schema.String),
-  testCode: Schema.optional(Schema.String),
-  testName: Schema.optional(Schema.String),
-  unit: Schema.optional(Schema.String),
-  refRangeLow: Schema.optional(Schema.Number),
-  refRangeHigh: Schema.optional(Schema.Number),
+  clinicNo: Schema.String,
+  barcode: Schema.String,
+  collectionDate: Schema.String,
+  collectionTime: Schema.String,
+  testCode: Schema.String,
+  testName: Schema.String,
+  unit: Schema.String,
+  refRangeLow: Schema.optional(Schema.String),
+  refRangeHigh: Schema.optional(Schema.String),
+  result: Schema.String,
   note: Schema.optional(Schema.String),
   nonSpecRefs: Schema.optional(Schema.String),
+  patientInfo: Schema.Struct({
+    id: Schema.String,
+    name: Schema.String,
+    dob: Schema.String,
+    gender: Schema.Union(Schema.Literal("M"), Schema.Literal("F")),
+  }),
 });
 
 interface LabTest {
@@ -98,6 +101,15 @@ function parseLabResults(input: string) {
                 gender: result.gender,
               },
             };
+          }),
+          Effect.map((result) => {
+            const validated = Schema.validateEither(LabResultSchema);
+            const validatedResult = validated(result);
+            console.log("🚀 ~ parseLabResults ~ validatedResult:", validatedResult);
+            if (Either.isLeft(validatedResult)) {
+              return;
+            }
+            return validatedResult.right;
           }),
           Effect.map((result) => result as unknown as LabTest)
         )
