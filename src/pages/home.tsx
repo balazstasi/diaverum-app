@@ -10,7 +10,7 @@ import { ErrorBoundary } from "@/components/composed/error-boundary/error-bounda
 import { useStep } from "@/lib/use-step";
 
 export default function Home() {
-  const { fileContent, readFile } = useFileBrowse({ onFileRead: console.log });
+  const { fileContent, readFile } = useFileBrowse({ onFileRead: () => {} });
   const { results, processLabResults, error } = useLabResultParser();
   const { next, previous, current } = useStep({ initialStep: 0, maxStep: results.length - 1 });
 

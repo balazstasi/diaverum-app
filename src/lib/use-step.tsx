@@ -12,19 +12,11 @@ export const useStep = ({ initialStep, maxStep }: UseStepProps) => {
     if (currentStep < maxStep) {
       setCurrentStep((prev) => prev + 1);
     }
-
-    if (currentStep === maxStep) {
-      setCurrentStep(0);
-    }
   };
 
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep((prev) => prev - 1);
-    }
-
-    if (currentStep === 0) {
-      setCurrentStep(maxStep);
     }
   };
 
