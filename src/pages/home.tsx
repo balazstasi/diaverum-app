@@ -11,7 +11,7 @@ import { useStep } from "@/lib/use-step";
 
 export default function Home() {
   const { fileContent, readFile } = useFileBrowse({ onFileRead: console.log });
-  const { results, processLabResults } = useLabResultParser();
+  const { results, processLabResults, error } = useLabResultParser();
   const { next, previous, current } = useStep({ initialStep: 0, maxStep: results.length - 1 });
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function Home() {
       <div className="max-w-md">
         <BrowseFile onFileRead={readFile} />
       </div>
-      <ErrorBoundary>
+      <ErrorBoundary error={error as string | undefined}>
         {results.length > 0 && (
           <div className="w-full max-w-2xl">
             <div className="flex items-center justify-between mb-4">

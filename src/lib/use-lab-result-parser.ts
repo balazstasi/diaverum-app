@@ -57,7 +57,6 @@ function parseLabResults(input: string) {
 
     const lines = input.split("\n").filter((line) => line && !line.startsWith("#"));
     const headers = lines[0].split("|").map((header) => header.toLowerCase().replace(/[^a-z0-9]/g, ""));
-    console.log("🚀 ~ parseLabResults ~ headers:", headers);
 
     if (headers.length !== lines[0].split("|").length) {
       return yield* _(Effect.fail(new InvalidHeaderError({ message: "Headers and data do not match" })));
@@ -120,7 +119,6 @@ function parseLabResults(input: string) {
 
 export const useLabResultParser = () => {
   const [results, setResults] = useState<LabTest[]>([]);
-  console.log("🚀 ~ useLabResultParser ~ results:", results);
   const [error, setError] = useState<string | null>(null);
 
   const processLabResults = useCallback(

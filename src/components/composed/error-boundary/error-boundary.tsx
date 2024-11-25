@@ -5,6 +5,7 @@ import { AlertCircle } from "lucide-react";
 
 interface Props {
   children: React.ReactNode;
+  error?: string;
 }
 
 interface State {
@@ -34,6 +35,16 @@ export class ErrorBoundary extends React.Component<Props, State> {
               Try Again
             </Button>
           </AlertDescription>
+        </Alert>
+      );
+    }
+
+    if (this.props.error) {
+      return (
+        <Alert variant="destructive" className="max-w-2xl mx-auto my-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error Processing File</AlertTitle>
+          <AlertDescription className="mt-2">{this.props.error}</AlertDescription>
         </Alert>
       );
     }
