@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Copy, FileText } from "lucide-react";
-import { LabTest } from "@/components/composed/test-results/types";
+import { LabTest, TestType } from "@/components/composed/test-results/types";
 import { TestResultRow } from "@/components/composed/test-results/test-results-row";
 
 interface MedicalDashboardProps {
@@ -26,19 +26,18 @@ const TestResults: React.FC<MedicalDashboardProps> = ({ labData }) => {
   };
 
   const groupedByCategory = (test: LabTest) => {
-    const category =
-      test.testCode?.[0] === "B"
-        ? "Blood Tests"
-        : test.testCode?.[0] === "T"
-        ? "Thyroid Tests"
-        : test.testCode?.[0] === "V"
-        ? "Viral Tests"
-        : "Other Tests";
+    const testCode = test.testCode.charAt(0);
 
-    return {
-      category,
-      test,
-    };
+    switch (testCode) {
+      case "B":
+        return { category: TestType.B, test };
+      case "T":
+        return { category: TestType.T, test };
+      case "V":
+        return { category: TestType.V, test };
+      default:
+        return { category: TestType.O, test };
+    }
   };
 
   const patientInfo = labData?.patientInfo;

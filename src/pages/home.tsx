@@ -4,31 +4,21 @@ import { LabTest } from "@/components/composed/test-results/types";
 import { Button } from "@/components/ui/button";
 import { useFileBrowse } from "@/lib/use-file-browse";
 import { useLabResultParser } from "@/lib/use-lab-result-parser";
-import { ChevronLeft, ChevronRight } from "lucide-react"; // Make sure to install lucide-react
-import { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
+import { ErrorBoundary } from "@/components/composed/error-boundary/error-boundary";
+import { useStep } from "@/lib/use-step";
 
 export default function Home() {
   const { fileContent, readFile } = useFileBrowse({ onFileRead: console.log });
   const { results, processLabResults } = useLabResultParser();
-  const [currentStep, setCurrentStep] = useState(0);
+  const { next, previous, current } = useStep({ initialStep: 0, maxStep: results.length - 1 });
 
   useEffect(() => {
     if (fileContent != null) {
       processLabResults(fileContent);
     }
   }, [fileContent, processLabResults]);
-
-  const handleNext = () => {
-    if (currentStep < results.length - 1) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1);
-    }
-  };
 
   return (
     <div className="flex flex-col items-center gap-4 justify-center h-100%">
@@ -37,27 +27,24 @@ export default function Home() {
       <div className="max-w-md">
         <BrowseFile onFileRead={readFile} />
       </div>
-      {results.length > 0 && (
-        <div className="w-full max-w-2xl">
-          <div className="flex items-center justify-between mb-4">
-            <Button variant="outline" size="icon" onClick={handlePrevious} disabled={currentStep === 0}>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <span className="text-sm font-medium">
-              Result {currentStep + 1} of {results.length}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleNext}
-              disabled={currentStep === results.length - 1}
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
+      <ErrorBoundary>
+        {results.length > 0 && (
+          <div className="w-full max-w-2xl">
+            <div className="flex items-center justify-between mb-4">
+              <Button variant="outline" size="icon" onClick={previous} disabled={current === 0}>
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-sm font-medium">
+                Result {current + 1} of {results.length}
+              </span>
+              <Button variant="outline" size="icon" onClick={next} disabled={current === results.length - 1}>
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+            <TestResults labData={results[current] as LabTest} />
           </div>
-          <TestResults labData={results[currentStep] as LabTest} />
-        </div>
-      )}
+        )}
+      </ErrorBoundary>
     </div>
   );
 }

@@ -24,3 +24,15 @@ export interface PatientResult {
   refRangeLow?: number;
   refRangeHigh?: number;
 }
+
+export enum TestType {
+  B = "Blood Tests",
+  T = "Thyroid Tests",
+  V = "Viral Tests",
+  O = "Other Tests",
+}
+
+export type TestCategory = {
+  category: TestType;
+  test: LabTest;
+};
