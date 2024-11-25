@@ -90,8 +90,9 @@ const useLabResultParser = () => {
           NotEnoughLinesError: (error) => Effect.fail(error.message),
         }),
         Effect.tap((results) => {
-          console.log("setting results");
           setResults(results as LabResult[]);
+          console.log("setting results", { results });
+          return Effect.succeed(results);
         })
       ),
     []
