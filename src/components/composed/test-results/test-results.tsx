@@ -12,7 +12,7 @@ interface MedicalDashboardProps {
   labData: LabTest[];
 }
 
-const MedicalDashboard: React.FC<MedicalDashboardProps> = ({ labData }) => {
+const TestResults: React.FC<MedicalDashboardProps> = ({ labData }) => {
   const [selectedTab, setSelectedTab] = useState("results");
 
   const exportToPDF = () => {
@@ -151,4 +151,4 @@ export const ExampleUsage: React.FC = () => {
   return <MedicalDashboard labData={sampleData} />;
 };
 
-export default ExampleUsage;
+export { TestResults };

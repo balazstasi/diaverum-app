@@ -11,8 +11,9 @@ export const useFileBrowse = ({ onFileRead = () => {} }: UseFileBrowseProps) => 
     e.preventDefault();
     const reader = new FileReader();
     reader.onload = (e) => {
-      setFileContent(e.target?.result as string);
-      onFileRead(e.target?.result as string);
+      const content = (e?.target?.result ?? "") as string;
+      setFileContent(content);
+      onFileRead(content);
     };
     reader.readAsText(e.target.files?.[0] ?? new Blob());
   };

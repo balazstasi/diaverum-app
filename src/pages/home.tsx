@@ -2,16 +2,14 @@ import { useFileBrowse } from "../lib/use-file-browse";
 import BrowseFile from "../components/composed/browse-file/browse-file";
 import { useLabResultParser } from "../lib/use-lab-result-parser";
 import { useEffect } from "react";
-import { Effect } from "effect";
 
 export default function Home() {
   const { fileContent, readFile } = useFileBrowse({ onFileRead: console.log });
   const { results, processLabResults } = useLabResultParser();
 
   useEffect(() => {
-    if (fileContent) {
-      console.log("processing");
-      Effect.runPromise(processLabResults(fileContent));
+    if (fileContent != null) {
+      processLabResults(fileContent);
     }
   }, [fileContent, processLabResults]);
 
@@ -19,5 +17,10 @@ export default function Home() {
     console.log(results);
   }, [results]);
 
-  return <BrowseFile onFileRead={readFile} />;
+  return (
+    <div className="flex flex-col items-center justify-center h-screen">
+      <BrowseFile onFileRead={readFile} />
+      {/* <TestResults labData={results as LabTest[]} /> */}
+    </div>
+  );
 }
